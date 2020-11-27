@@ -46,10 +46,10 @@ jobs:
         exit 1
         fi
         cp -f configs/templates/$TNAME.config .config
-        sed -i '/CONFIG_FIRMWARE_INCLUDE_SFE/d' configs/templates/$TNAME.config #删除配置项SFE加速
-        echo "CONFIG_FIRMWARE_INCLUDE_SFE=y" >> configs/templates/$TNAME.config #集成SFE加速
+      
         sed -i '/CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS/d' .config #删除配置项SS plus+
         echo "CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS=y" >> .config #增加SS plus+
+
 
         sudo ./clear_tree
         sudo ./build_firmware_modify $TNAME 0
@@ -63,7 +63,7 @@ jobs:
      #上传到WeTransfer
     - name: Upload firmware to WeTransfer
       id: wetransfer
-      if: steps.organize.outputs.status == 'success'
+      if: always
       run: |
         curl -fsSL git.io/file-transfer | sh
         ./transfer wet  -s -p 16 --no-progress /opt/images/*.trx 2>&1 | tee wetransfer.log
@@ -71,7 +71,7 @@ jobs:
     #上传到奶牛快传
     - name: Upload firmware to cowtransfer
       id: cowtransfer
-      if: steps.wetransfer.outputs.status == 'success'
+      if: always
       run: |
         curl -sL https://git.io/cowtransfer | sh
         ./cowtransfer-uploader -s -p 16 /opt/images/*.trx 2>&1 | tee cowtransfer.log
