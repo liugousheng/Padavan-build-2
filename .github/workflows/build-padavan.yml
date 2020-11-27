@@ -63,7 +63,7 @@ jobs:
      #上传到WeTransfer
     - name: Upload firmware to WeTransfer
       id: wetransfer
-      if: always
+      if: always()
       run: |
         curl -fsSL git.io/file-transfer | sh
         ./transfer wet  -s -p 16 --no-progress /opt/images/*.trx 2>&1 | tee wetransfer.log
@@ -71,7 +71,7 @@ jobs:
     #上传到奶牛快传
     - name: Upload firmware to cowtransfer
       id: cowtransfer
-      if: always
+      if: always()
       run: |
         curl -sL https://git.io/cowtransfer | sh
         ./cowtransfer-uploader -s -p 16 /opt/images/*.trx 2>&1 | tee cowtransfer.log
